@@ -22,3 +22,4 @@ ratings:
 exclude_paths:
 - "**/vendor/**/*"
 - "**/mocks/**/*"
+- "**/*_test.go"
