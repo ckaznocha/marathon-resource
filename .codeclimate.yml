@@ -10,8 +10,15 @@ engines:
     enabled: true
   markdownlint:
     enabled: true
+    checks:
+      MD030:
+        enabled: false
   shellcheck:
+    enabled: true
+  rubocop:
     enabled: true
 ratings:
   paths: []
-exclude_paths: []
+exclude_paths:
+- "**/vendor/**/*"
+- "**/mocks/**/*"
