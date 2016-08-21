@@ -1,4 +1,11 @@
 language: go
+
+before_install:
+- go get github.com/maruel/pre-commit-go/cmd/pcg
+
+script:
+- pcg installrun -m all -a
+
 notifications:
   slack:
     secure: yksF8NmA66wYJwSqyLf40AaFMxR1b4CvmRFfPsFzy1BfIn6OOgypck46iKce3r2dzD3ERkazOfo+Q1M0nLFEzJclOuuwdwEb4QuPEHnghP13h487abEx7tEvigk6b/N3BjOnmQ4ZE9NtLHweNKhU/ZyV1yajlQfpOBvYAcuz30SKCZZBWehYOahAi6LYsKfOYs9TPhHhqdCm1/kTjgxcIu1ZlfgnP1zIn1jx8MiNlmTeJKsdgCPo9bjcA1JnOa/5krYi83gEw0+Bf0wQznt1c+yWAhCAiNHXr04jWJXdm8u1lwzP5nUFxKE4XRiKbbfSNEcwqshwycLJlyAfEu7F+Mzh3u/veebYg9ysw57cJUm8GyEllqlpRF1J5TuMxObG6VLHct/eOlU2btLhqkzeyO4APAaBywv0UN3Ml7k+gj3RBIcfCj1ATRO+RkqQ54oc6tyka+JhP2z5ip3OJbfDmZPjhGLOlQ34v55roqqjn4Ckm5pBvV0Whu/SmPreFT1nDLTIYW30R59oO9vydUMFNoCfG5qobdSpEycBVnkvu/1OxNt/3w1RotDcAYhPzy107uvk+UL6hB/pfjiV2xpKRr5m5J13w7F6KNySJNBvPzYbszWJl0a5MBTiDStnjp+OB6fQN9CAy337Bhkbhc8s8isZmrs8A4rdGJHFjDP0/jc=
