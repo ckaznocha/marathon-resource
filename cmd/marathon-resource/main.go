@@ -33,10 +33,11 @@ type (
 	}
 )
 
+var logger logrus.FieldLogger = logrus.New()
+
 func main() {
 	var (
 		input   inputJSON
-		logger  = logrus.New()
 		decoder = json.NewDecoder(os.Stdin)
 		/*encoder*/ _ = json.NewEncoder(os.Stdout)
 	)
