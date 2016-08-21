@@ -18,7 +18,10 @@ engines:
   rubocop:
     enabled: true
 ratings:
-  paths: []
+  paths:
+  - "**.rb"
+  - "**.go"
+  - "scripts/**/*"
 exclude_paths:
 - "**/vendor/**/*"
 - "**/mocks/**/*"

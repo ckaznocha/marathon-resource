@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/marathon-resource "in" "$1"

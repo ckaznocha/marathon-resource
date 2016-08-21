@@ -41,8 +41,8 @@ func main() {
 		/*encoder*/ _ = json.NewEncoder(os.Stdout)
 	)
 
-	if len(os.Args) != 2 {
-		logger.Fatal("You must supply exactly 1 argument")
+	if len(os.Args) < 2 {
+		logger.Fatal("You must one or more arguments")
 	}
 
 	if err := decoder.Decode(&input); err != nil {
