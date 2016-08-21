@@ -16,8 +16,8 @@ const (
 
 type (
 	params struct {
-		AppJSON      string            `json:"app_json"`
-		Replacements map[string]string `json:"replacements"`
+		AppJSON      string     `json:"app_json"`
+		Replacements []metadata `json:"replacements"`
 	}
 	source struct {
 		AppID string `json:"app_id"`
@@ -31,9 +31,18 @@ type (
 		Source  source  `json:"source"`
 		Version version `json:"version"`
 	}
+	checkOut []version
+	metadata struct {
+		Name  string `json:"name"`
+		Value string `json:"value"`
+	}
+	ioOut struct {
+		Version  version    `json:"version"`
+		Metadata []metadata `json:"metadata"`
+	}
 )
 
-var logger logrus.FieldLogger = logrus.New()
+var logger = logrus.New()
 
 func main() {
 	var (
