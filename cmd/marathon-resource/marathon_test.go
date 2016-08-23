@@ -347,10 +347,10 @@ func Test_newMarathoner(t *testing.T) {
 		args args
 		want marathoner
 	}{
-		{"Works", args{http.DefaultClient, &url.URL{}}, &marathon{http.DefaultClient, &url.URL{}}},
+		{"Works", args{http.DefaultClient, &url.URL{}}, &marathon{http.DefaultClient, &url.URL{}, nil}},
 	}
 	for _, tt := range tests {
-		if got := newMarathoner(tt.args.client, tt.args.uri); !reflect.DeepEqual(got, tt.want) {
+		if got := newMarathoner(tt.args.client, tt.args.uri, nil); !reflect.DeepEqual(got, tt.want) {
 			t.Errorf("%q. newMarathoner() = %v, want %v", tt.name, got, tt.want)
 		}
 	}
