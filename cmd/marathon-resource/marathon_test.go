@@ -71,7 +71,7 @@ func Test_marathon_handleReq(t *testing.T) {
 		u, _       = url.Parse("http://foo.bar/")
 	)
 	defer ctrl.Finish()
-	mockClient.EXPECT().Do(gomock.Any()).Times(1).Return(
+	mockClient.EXPECT().Do(gomock.Any()).Times(2).Return(
 		&http.Response{
 			StatusCode: http.StatusOK,
 			Body:       ioutil.NopCloser(strings.NewReader(`{"foo":"bar"}`)),
@@ -92,6 +92,7 @@ func Test_marathon_handleReq(t *testing.T) {
 	type fields struct {
 		client doer
 		url    *url.URL
+		auth   *authCreds
 	}
 	type args struct {
 		method   string
@@ -108,7 +109,19 @@ func Test_marathon_handleReq(t *testing.T) {
 	}{
 		{
 			"No body",
-			fields{mockClient, u},
+			fields{mockClient, u, nil},
+			args{
+				http.MethodGet,
+				"/",
+				nil,
+				http.StatusOK,
+				&map[string]string{},
+			},
+			false,
+		},
+		{
+			"With Auth",
+			fields{mockClient, u, &authCreds{"foo", "bar"}},
 			args{
 				http.MethodGet,
 				"/",
@@ -120,7 +133,7 @@ func Test_marathon_handleReq(t *testing.T) {
 		},
 		{
 			"Bad Status code",
-			fields{mockClient, u},
+			fields{mockClient, u, nil},
 			args{
 				http.MethodGet,
 				"/",
@@ -132,7 +145,7 @@ func Test_marathon_handleReq(t *testing.T) {
 		},
 		{
 			"Error",
-			fields{mockClient, u},
+			fields{mockClient, u, nil},
 			args{
 				http.MethodGet,
 				"/",
@@ -147,6 +160,7 @@ func Test_marathon_handleReq(t *testing.T) {
 		m := &marathon{
 			client: tt.fields.client,
 			url:    tt.fields.url,
+			auth:   tt.fields.auth,
 		}
 		if err := m.handleReq(tt.args.method, tt.args.path, tt.args.payload, tt.args.wantCode, tt.args.resObj); (err != nil) != tt.wantErr {
 			t.Errorf("%q. marathon.handleReq(%v, %v, %v, %v, %v) error = %v, wantErr %v", tt.name, tt.args.method, tt.args.path, tt.args.payload, tt.args.wantCode, tt.args.resObj, err, tt.wantErr)
