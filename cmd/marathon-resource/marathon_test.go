@@ -172,7 +172,7 @@ func Test_marathon_handleReq(t *testing.T) {
 		},
 		{
 			"Error",
-			fields{mockClient, u},
+			fields{mockClient, u, nil},
 			args{
 				"😂",
 				"/",
@@ -184,7 +184,7 @@ func Test_marathon_handleReq(t *testing.T) {
 		},
 		{
 			"Error",
-			fields{mockClient, u},
+			fields{mockClient, u, nil},
 			args{
 				http.MethodGet,
 				"/",
