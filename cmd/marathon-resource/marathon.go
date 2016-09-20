@@ -36,10 +36,11 @@ type (
 	marathon struct {
 		client doer
 		url    *url.URL
+		auth   *authCreds
 	}
 )
 
-func newMarathoner(client doer, uri *url.URL) marathoner {
+func newMarathoner(client doer, uri *url.URL, auth *authCreds) marathoner {
 	return &marathon{client: client, url: uri}
 }
 
@@ -57,6 +58,9 @@ func (m *marathon) handleReq(
 		return err
 	}
 	req.Header.Set("Content-type", jsonContentType)
+	if m.auth != nil {
+		req.SetBasicAuth(m.auth.UserName, m.auth.Password)
+	}
 	res, err := m.client.Do(req)
 	if err != nil {
 		return err

@@ -19,9 +19,14 @@ type (
 		AppJSON      string     `json:"app_json"`
 		Replacements []metadata `json:"replacements"`
 	}
+	authCreds struct {
+		UserName string `json:"user_name"`
+		Password string `json:"password"`
+	}
 	source struct {
-		AppID string `json:"app_id"`
-		URI   string `json:"uri"`
+		AppID     string     `json:"app_id"`
+		URI       string     `json:"uri"`
+		BasicAuth *authCreds `json:"basic_auth"`
 	}
 	version struct {
 		Ref string `json:"ref"`
@@ -64,7 +69,7 @@ func main() {
 		logger.WithError(err).Fatalf("Malformed URI %s", input.Source.URI)
 	}
 
-	// m := newMarathoner(http.DefaultClient, uri)
+	// m := newMarathoner(&http.Client{}, uri, source.BasicAuth)
 
 	switch os.Args[1] {
 	case check:
