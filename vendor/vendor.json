@@ -9,6 +9,30 @@
 			"revisionTime": "2016-08-13T15:40:05Z"
 		},
 		{
+			"checksumSHA1": "hjj6ZzJymmnFaocvyFpL6yR3LLU=",
+			"path": "github.com/aymerick/raymond",
+			"revision": "a2232af10b53ef1ae5a767f5178db3a6c1dab655",
+			"revisionTime": "2016-06-01T19:06:02Z"
+		},
+		{
+			"checksumSHA1": "Rvn+RH9pwFno1w6W+mhWsj/PxlA=",
+			"path": "github.com/aymerick/raymond/ast",
+			"revision": "a2232af10b53ef1ae5a767f5178db3a6c1dab655",
+			"revisionTime": "2016-06-01T19:06:02Z"
+		},
+		{
+			"checksumSHA1": "5SJwPK0MYtJt5YiE1BNc9Wl3+S0=",
+			"path": "github.com/aymerick/raymond/lexer",
+			"revision": "a2232af10b53ef1ae5a767f5178db3a6c1dab655",
+			"revisionTime": "2016-06-01T19:06:02Z"
+		},
+		{
+			"checksumSHA1": "TCu/8QBP8TApLjSt13a7Qjnyxrs=",
+			"path": "github.com/aymerick/raymond/parser",
+			"revision": "a2232af10b53ef1ae5a767f5178db3a6c1dab655",
+			"revisionTime": "2016-06-01T19:06:02Z"
+		},
+		{
 			"checksumSHA1": "O/eUfUoi7lWgZiipUP939AAdKk4=",
 			"path": "github.com/donovanhide/eventsource",
 			"revision": "fd1de70867126402be23c306e1ce32828455d85b",

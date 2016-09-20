@@ -128,10 +128,8 @@ func (m *marathon) CheckDeployment(deploymentID string) (bool, error) {
 		http.StatusOK,
 		&deployments,
 	)
-	fmt.Println(err)
 
 	for _, v := range deployments {
-		fmt.Println(v.ID)
 		if v.ID == deploymentID {
 			return true, nil
 		}

@@ -16,8 +16,8 @@ const (
 
 type (
 	params struct {
-		AppJSON      string            `json:"app_json"`
-		Replacements map[string]string `json:"replacements"`
+		AppJSON      string     `json:"app_json"`
+		Replacements []metadata `json:"replacements"`
 	}
 	authCreds struct {
 		UserName string `json:"user_name"`
@@ -36,12 +36,22 @@ type (
 		Source  source  `json:"source"`
 		Version version `json:"version"`
 	}
+	checkOut []version
+	metadata struct {
+		Name  string `json:"name"`
+		Value string `json:"value"`
+	}
+	ioOut struct {
+		Version  version    `json:"version"`
+		Metadata []metadata `json:"metadata"`
+	}
 )
+
+var logger = logrus.New()
 
 func main() {
 	var (
 		input   inputJSON
-		logger  = logrus.New()
 		decoder = json.NewDecoder(os.Stdin)
 		/*encoder*/ _ = json.NewEncoder(os.Stdout)
 	)

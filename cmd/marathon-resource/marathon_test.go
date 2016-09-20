@@ -31,6 +31,13 @@ func Test_marathon_LatestVersions(t *testing.T) {
 		},
 		nil,
 	)
+	mockClient.EXPECT().Do(gomock.Any()).Times(1).Return(
+		&http.Response{
+			StatusCode: http.StatusConflict,
+			Body:       ioutil.NopCloser(strings.NewReader(`{"versions":["2015-02-11T09:31:50.021Z","2014-03-01T23:42:20.938Z"]}`)),
+		},
+		nil,
+	)
 	type fields struct {
 		client doer
 		url    *url.URL
@@ -47,6 +54,7 @@ func Test_marathon_LatestVersions(t *testing.T) {
 		wantErr bool
 	}{
 		{"Works", fields{mockClient, u}, args{"foo", "2015-02-11T09:31:50.021Z"}, []string{"2015-02-11T09:31:50.021Z"}, false},
+		{"Errors", fields{mockClient, u}, args{"foo", "2015-02-11T09:31:50.021Z"}, nil, true},
 	}
 	for _, tt := range tests {
 		m := &marathon{
@@ -82,6 +90,13 @@ func Test_marathon_handleReq(t *testing.T) {
 		&http.Response{
 			StatusCode: http.StatusBadRequest,
 			Body:       ioutil.NopCloser(strings.NewReader(`{"foo":"bar"}`)),
+		},
+		nil,
+	)
+	mockClient.EXPECT().Do(gomock.Any()).Times(1).Return(
+		&http.Response{
+			StatusCode: http.StatusOK,
+			Body:       ioutil.NopCloser(strings.NewReader(`{]`)),
 		},
 		nil,
 	)
@@ -152,6 +167,30 @@ func Test_marathon_handleReq(t *testing.T) {
 				nil,
 				http.StatusOK,
 				&map[string]string{},
+			},
+			true,
+		},
+		{
+			"Error",
+			fields{mockClient, u},
+			args{
+				"😂",
+				"/",
+				nil,
+				http.StatusOK,
+				&map[string]string{},
+			},
+			true,
+		},
+		{
+			"Error",
+			fields{mockClient, u},
+			args{
+				http.MethodGet,
+				"/",
+				nil,
+				http.StatusOK,
+				&[]string{},
 			},
 			true,
 		},
