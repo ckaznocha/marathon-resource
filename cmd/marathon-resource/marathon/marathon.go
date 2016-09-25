@@ -50,7 +50,7 @@ func (m *marathon) handleReq(
 	method string,
 	path string,
 	payload io.Reader,
-	wantCode int,
+	wantCodes []int,
 	resObj interface{},
 ) error {
 	u := *m.url
@@ -69,9 +69,22 @@ func (m *marathon) handleReq(
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode != wantCode {
-		return fmt.Errorf("Expected %d response code but got %d", wantCode, res.StatusCode)
+	gotWantCode := false
+	for _, wantCode := range wantCodes {
+		if res.StatusCode == wantCode {
+			gotWantCode = true
+			break
+		}
 	}
+
+	if !gotWantCode {
+		return fmt.Errorf(
+			"Expected one of %v responses code but got %d",
+			wantCodes,
+			res.StatusCode,
+		)
+	}
+
 	if err = json.NewDecoder(res.Body).Decode(resObj); err != nil && err != io.EOF {
 		return err
 	}
@@ -84,7 +97,7 @@ func (m *marathon) LatestVersions(appID, version string) ([]string, error) {
 		http.MethodGet,
 		fmt.Sprintf(pathAppVersions, appID),
 		nil,
-		http.StatusOK,
+		[]int{http.StatusOK},
 		&v,
 	); err != nil {
 		return nil, err
@@ -98,7 +111,7 @@ func (m *marathon) GetApp(appID, version string) (gomarathon.Application, error)
 		http.MethodGet,
 		fmt.Sprintf(pathAppAtVersion, appID, version),
 		nil,
-		http.StatusOK,
+		[]int{http.StatusOK},
 		&app,
 	)
 	return app, err
@@ -113,7 +126,7 @@ func (m *marathon) UpdateApp(inApp gomarathon.Application) (gomarathon.Deploymen
 		http.MethodPut,
 		fmt.Sprintf(pathApp, inApp.ID),
 		bytes.NewReader(payload),
-		http.StatusOK,
+		[]int{http.StatusOK, http.StatusCreated},
 		&deployment,
 	)
 	return deployment, err
@@ -127,7 +140,7 @@ func (m *marathon) CheckDeployment(deploymentID string) (bool, error) {
 		http.MethodGet,
 		pathDeployments,
 		nil,
-		http.StatusOK,
+		[]int{http.StatusOK},
 		&deployments,
 	)
 
@@ -144,7 +157,7 @@ func (m *marathon) DeleteDeployment(deploymentID string) error {
 		http.MethodDelete,
 		fmt.Sprintf(pathDeployment, deploymentID),
 		nil,
-		http.StatusOK,
+		[]int{http.StatusOK},
 		nil,
 	)
 }

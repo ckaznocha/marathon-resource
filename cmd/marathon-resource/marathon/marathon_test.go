@@ -114,7 +114,7 @@ func Test_marathon_handleReq(t *testing.T) {
 		method   string
 		path     string
 		payload  io.Reader
-		wantCode int
+		wantCode []int
 		resObj   interface{}
 	}
 	tests := []struct {
@@ -130,7 +130,7 @@ func Test_marathon_handleReq(t *testing.T) {
 				http.MethodGet,
 				"/",
 				nil,
-				http.StatusOK,
+				[]int{http.StatusOK},
 				&map[string]string{},
 			},
 			false,
@@ -142,7 +142,7 @@ func Test_marathon_handleReq(t *testing.T) {
 				http.MethodGet,
 				"/",
 				nil,
-				http.StatusOK,
+				[]int{http.StatusOK},
 				&map[string]string{},
 			},
 			false,
@@ -154,7 +154,7 @@ func Test_marathon_handleReq(t *testing.T) {
 				http.MethodGet,
 				"/",
 				nil,
-				http.StatusOK,
+				[]int{http.StatusOK},
 				&map[string]string{},
 			},
 			true,
@@ -166,7 +166,7 @@ func Test_marathon_handleReq(t *testing.T) {
 				http.MethodGet,
 				"/",
 				nil,
-				http.StatusOK,
+				[]int{http.StatusOK},
 				&map[string]string{},
 			},
 			true,
@@ -178,7 +178,7 @@ func Test_marathon_handleReq(t *testing.T) {
 				"😂",
 				"/",
 				nil,
-				http.StatusOK,
+				[]int{http.StatusOK},
 				&map[string]string{},
 			},
 			true,
@@ -190,7 +190,7 @@ func Test_marathon_handleReq(t *testing.T) {
 				http.MethodGet,
 				"/",
 				nil,
-				http.StatusOK,
+				[]int{http.StatusOK},
 				&[]string{},
 			},
 			true,
