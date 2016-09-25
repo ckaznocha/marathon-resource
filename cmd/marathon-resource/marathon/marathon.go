@@ -29,8 +29,8 @@ type (
 	//Marathoner is an interface to interact with marathon
 	Marathoner interface {
 		LatestVersions(appID string, version string) ([]string, error)
-		GetApp(appID, version string) (Application, error)
-		UpdateApp(Application) (DeploymentID, error)
+		GetApp(appID, version string) (gomarathon.Application, error)
+		UpdateApp(gomarathon.Application) (gomarathon.DeploymentID, error)
 		CheckDeployment(deploymentID string) (bool, error)
 		DeleteDeployment(deploymentID string) error
 	}
@@ -45,12 +45,6 @@ type (
 		UserName string `json:"user_name"`
 		Password string `json:"password"`
 	}
-
-	//Application is a marathon application
-	Application gomarathon.Application
-
-	//DeploymentID is a marathon deploymentID
-	DeploymentID gomarathon.DeploymentID
 )
 
 //NewMarathoner returns a new marathoner
@@ -117,8 +111,8 @@ func (m *marathon) LatestVersions(appID, version string) ([]string, error) {
 	return dates.NewerTimestamps(v.Versions, version)
 }
 
-func (m *marathon) GetApp(appID, version string) (Application, error) {
-	var app Application
+func (m *marathon) GetApp(appID, version string) (gomarathon.Application, error) {
+	var app gomarathon.Application
 	err := m.handleReq(
 		http.MethodGet,
 		fmt.Sprintf(pathAppAtVersion, appID, version),
@@ -129,10 +123,10 @@ func (m *marathon) GetApp(appID, version string) (Application, error) {
 	return app, err
 }
 
-func (m *marathon) UpdateApp(inApp Application) (DeploymentID, error) {
+func (m *marathon) UpdateApp(inApp gomarathon.Application) (gomarathon.DeploymentID, error) {
 	var (
 		payload, _ = json.Marshal(inApp)
-		deployment DeploymentID
+		deployment gomarathon.DeploymentID
 	)
 	err := m.handleReq(
 		http.MethodPut,

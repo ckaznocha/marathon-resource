@@ -214,7 +214,7 @@ func Test_marathon_GetApp(t *testing.T) {
 		u, _       = url.Parse("http://foo.bar/")
 	)
 	defer ctrl.Finish()
-	in, _ := json.Marshal(Application{ID: "hello-app"})
+	in, _ := json.Marshal(gomarathon.Application{ID: "hello-app"})
 	mockClient.EXPECT().Do(gomock.Any()).Times(1).Return(
 		&http.Response{
 			StatusCode: http.StatusOK,
@@ -234,10 +234,10 @@ func Test_marathon_GetApp(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    Application
+		want    gomarathon.Application
 		wantErr bool
 	}{
-		{"Works", fields{mockClient, u}, args{"hello-app", "2015-02-11T09:31:50.021Z"}, Application{ID: "hello-app"}, false},
+		{"Works", fields{mockClient, u}, args{"hello-app", "2015-02-11T09:31:50.021Z"}, gomarathon.Application{ID: "hello-app"}, false},
 	}
 	for _, tt := range tests {
 		m := &marathon{
@@ -262,7 +262,7 @@ func Test_marathon_UpdateApp(t *testing.T) {
 		u, _       = url.Parse("http://foo.bar/")
 	)
 	defer ctrl.Finish()
-	out, _ := json.Marshal(DeploymentID{DeploymentID: "foo"})
+	out, _ := json.Marshal(gomarathon.DeploymentID{DeploymentID: "foo"})
 	mockClient.EXPECT().Do(gomock.Any()).Times(1).Return(
 		&http.Response{
 			StatusCode: http.StatusOK,
@@ -275,16 +275,16 @@ func Test_marathon_UpdateApp(t *testing.T) {
 		url    *url.URL
 	}
 	type args struct {
-		inApp Application
+		inApp gomarathon.Application
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    DeploymentID
+		want    gomarathon.DeploymentID
 		wantErr bool
 	}{
-		{"Works", fields{mockClient, u}, args{Application{ID: "foo-app"}}, DeploymentID{DeploymentID: "foo"}, false},
+		{"Works", fields{mockClient, u}, args{gomarathon.Application{ID: "foo-app"}}, gomarathon.DeploymentID{DeploymentID: "foo"}, false},
 	}
 	for _, tt := range tests {
 		m := &marathon{
