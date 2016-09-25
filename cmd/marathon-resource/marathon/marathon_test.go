@@ -12,7 +12,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/actions"
 	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/mocks"
 	gomarathon "github.com/gambol99/go-marathon"
 	"github.com/golang/mock/gomock"
@@ -108,7 +107,7 @@ func Test_marathon_handleReq(t *testing.T) {
 	type fields struct {
 		client doer
 		url    *url.URL
-		auth   *actions.AuthCreds
+		auth   *AuthCreds
 	}
 	type args struct {
 		method   string
@@ -137,7 +136,7 @@ func Test_marathon_handleReq(t *testing.T) {
 		},
 		{
 			"With Auth",
-			fields{mockClient, u, &actions.AuthCreds{UserName: "foo", Password: "bar"}},
+			fields{mockClient, u, &AuthCreds{UserName: "foo", Password: "bar"}},
 			args{
 				http.MethodGet,
 				"/",
@@ -215,7 +214,7 @@ func Test_marathon_GetApp(t *testing.T) {
 		u, _       = url.Parse("http://foo.bar/")
 	)
 	defer ctrl.Finish()
-	in, _ := json.Marshal(gomarathon.Application{ID: "hello-app"})
+	in, _ := json.Marshal(Application{ID: "hello-app"})
 	mockClient.EXPECT().Do(gomock.Any()).Times(1).Return(
 		&http.Response{
 			StatusCode: http.StatusOK,
@@ -235,10 +234,10 @@ func Test_marathon_GetApp(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    gomarathon.Application
+		want    Application
 		wantErr bool
 	}{
-		{"Works", fields{mockClient, u}, args{"hello-app", "2015-02-11T09:31:50.021Z"}, gomarathon.Application{ID: "hello-app"}, false},
+		{"Works", fields{mockClient, u}, args{"hello-app", "2015-02-11T09:31:50.021Z"}, Application{ID: "hello-app"}, false},
 	}
 	for _, tt := range tests {
 		m := &marathon{
@@ -263,7 +262,7 @@ func Test_marathon_UpdateApp(t *testing.T) {
 		u, _       = url.Parse("http://foo.bar/")
 	)
 	defer ctrl.Finish()
-	out, _ := json.Marshal(gomarathon.DeploymentID{DeploymentID: "foo"})
+	out, _ := json.Marshal(DeploymentID{DeploymentID: "foo"})
 	mockClient.EXPECT().Do(gomock.Any()).Times(1).Return(
 		&http.Response{
 			StatusCode: http.StatusOK,
@@ -276,16 +275,16 @@ func Test_marathon_UpdateApp(t *testing.T) {
 		url    *url.URL
 	}
 	type args struct {
-		inApp gomarathon.Application
+		inApp Application
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    gomarathon.DeploymentID
+		want    DeploymentID
 		wantErr bool
 	}{
-		{"Works", fields{mockClient, u}, args{gomarathon.Application{ID: "foo-app"}}, gomarathon.DeploymentID{DeploymentID: "foo"}, false},
+		{"Works", fields{mockClient, u}, args{Application{ID: "foo-app"}}, DeploymentID{DeploymentID: "foo"}, false},
 	}
 	for _, tt := range tests {
 		m := &marathon{

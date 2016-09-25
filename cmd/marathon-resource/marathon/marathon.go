@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/actions"
+	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/dates"
 	gomarathon "github.com/gambol99/go-marathon"
 )
 
@@ -29,20 +29,32 @@ type (
 	//Marathoner is an interface to interact with marathon
 	Marathoner interface {
 		LatestVersions(appID string, version string) ([]string, error)
-		GetApp(appID, version string) (gomarathon.Application, error)
-		UpdateApp(gomarathon.Application) (gomarathon.DeploymentID, error)
+		GetApp(appID, version string) (Application, error)
+		UpdateApp(Application) (DeploymentID, error)
 		CheckDeployment(deploymentID string) (bool, error)
 		DeleteDeployment(deploymentID string) error
 	}
 	marathon struct {
 		client doer
 		url    *url.URL
-		auth   *actions.AuthCreds
+		auth   *AuthCreds
 	}
+
+	//AuthCreds will be used for HTTP basic auth
+	AuthCreds struct {
+		UserName string `json:"user_name"`
+		Password string `json:"password"`
+	}
+
+	//Application is a marathon application
+	Application gomarathon.Application
+
+	//DeploymentID is a marathon deploymentID
+	DeploymentID gomarathon.DeploymentID
 )
 
 //NewMarathoner returns a new marathoner
-func NewMarathoner(client doer, uri *url.URL, auth *actions.AuthCreds) Marathoner {
+func NewMarathoner(client doer, uri *url.URL, auth *AuthCreds) Marathoner {
 	return &marathon{client: client, url: uri}
 }
 
@@ -102,11 +114,11 @@ func (m *marathon) LatestVersions(appID, version string) ([]string, error) {
 	); err != nil {
 		return nil, err
 	}
-	return actions.NewerTimestamps(v.Versions, version)
+	return dates.NewerTimestamps(v.Versions, version)
 }
 
-func (m *marathon) GetApp(appID, version string) (gomarathon.Application, error) {
-	var app gomarathon.Application
+func (m *marathon) GetApp(appID, version string) (Application, error) {
+	var app Application
 	err := m.handleReq(
 		http.MethodGet,
 		fmt.Sprintf(pathAppAtVersion, appID, version),
@@ -117,10 +129,10 @@ func (m *marathon) GetApp(appID, version string) (gomarathon.Application, error)
 	return app, err
 }
 
-func (m *marathon) UpdateApp(inApp gomarathon.Application) (gomarathon.DeploymentID, error) {
+func (m *marathon) UpdateApp(inApp Application) (DeploymentID, error) {
 	var (
 		payload, _ = json.Marshal(inApp)
-		deployment gomarathon.DeploymentID
+		deployment DeploymentID
 	)
 	err := m.handleReq(
 		http.MethodPut,
