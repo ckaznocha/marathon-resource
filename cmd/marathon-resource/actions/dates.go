@@ -1,4 +1,4 @@
-package main
+package actions
 
 import (
 	"errors"
@@ -6,19 +6,21 @@ import (
 	"time"
 )
 
-type dates []time.Time
+//Dates is sa sortable slice of times
+type Dates []time.Time
 
-func (d dates) Len() int           { return len(d) }
-func (d dates) Less(i, j int) bool { return d[i].Before(d[j]) }
-func (d dates) Swap(i, j int)      { d[i], d[j] = d[j], d[i] }
+func (d Dates) Len() int           { return len(d) }
+func (d Dates) Less(i, j int) bool { return d[i].Before(d[j]) }
+func (d Dates) Swap(i, j int)      { d[i], d[j] = d[j], d[i] }
 
-func newerTimestamps(
+//NewerTimestamps returns all timestamps in a list nwer than a given timestamps
+func NewerTimestamps(
 	timestampStrings []string,
 	currentTimestampString string,
 ) ([]string, error) {
 	var (
 		currentTimestampIndex int
-		timestamps            = make(dates, len(timestampStrings))
+		timestamps            = make(Dates, len(timestampStrings))
 	)
 	for i, v := range timestampStrings {
 		t, err := time.Parse(time.RFC3339Nano, v)

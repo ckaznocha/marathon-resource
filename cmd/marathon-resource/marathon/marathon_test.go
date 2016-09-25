@@ -1,4 +1,4 @@
-package main
+package marathon
 
 import (
 	"bytes"
@@ -12,6 +12,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/actions"
 	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/mocks"
 	gomarathon "github.com/gambol99/go-marathon"
 	"github.com/golang/mock/gomock"
@@ -107,13 +108,13 @@ func Test_marathon_handleReq(t *testing.T) {
 	type fields struct {
 		client doer
 		url    *url.URL
-		auth   *authCreds
+		auth   *actions.AuthCreds
 	}
 	type args struct {
 		method   string
 		path     string
 		payload  io.Reader
-		wantCode int
+		wantCode []int
 		resObj   interface{}
 	}
 	tests := []struct {
@@ -129,19 +130,19 @@ func Test_marathon_handleReq(t *testing.T) {
 				http.MethodGet,
 				"/",
 				nil,
-				http.StatusOK,
+				[]int{http.StatusOK},
 				&map[string]string{},
 			},
 			false,
 		},
 		{
 			"With Auth",
-			fields{mockClient, u, &authCreds{"foo", "bar"}},
+			fields{mockClient, u, &actions.AuthCreds{UserName: "foo", Password: "bar"}},
 			args{
 				http.MethodGet,
 				"/",
 				nil,
-				http.StatusOK,
+				[]int{http.StatusOK},
 				&map[string]string{},
 			},
 			false,
@@ -153,7 +154,7 @@ func Test_marathon_handleReq(t *testing.T) {
 				http.MethodGet,
 				"/",
 				nil,
-				http.StatusOK,
+				[]int{http.StatusOK},
 				&map[string]string{},
 			},
 			true,
@@ -165,7 +166,7 @@ func Test_marathon_handleReq(t *testing.T) {
 				http.MethodGet,
 				"/",
 				nil,
-				http.StatusOK,
+				[]int{http.StatusOK},
 				&map[string]string{},
 			},
 			true,
@@ -177,7 +178,7 @@ func Test_marathon_handleReq(t *testing.T) {
 				"😂",
 				"/",
 				nil,
-				http.StatusOK,
+				[]int{http.StatusOK},
 				&map[string]string{},
 			},
 			true,
@@ -189,7 +190,7 @@ func Test_marathon_handleReq(t *testing.T) {
 				http.MethodGet,
 				"/",
 				nil,
-				http.StatusOK,
+				[]int{http.StatusOK},
 				&[]string{},
 			},
 			true,
@@ -398,13 +399,13 @@ func Test_newMarathoner(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want marathoner
+		want Marathoner
 	}{
 		{"Works", args{http.DefaultClient, &url.URL{}}, &marathon{http.DefaultClient, &url.URL{}, nil}},
 	}
 	for _, tt := range tests {
-		if got := newMarathoner(tt.args.client, tt.args.uri, nil); !reflect.DeepEqual(got, tt.want) {
-			t.Errorf("%q. newMarathoner() = %v, want %v", tt.name, got, tt.want)
+		if got := NewMarathoner(tt.args.client, tt.args.uri, nil); !reflect.DeepEqual(got, tt.want) {
+			t.Errorf("%q. NewMarathoner() = %v, want %v", tt.name, got, tt.want)
 		}
 	}
 }
