@@ -1,4 +1,4 @@
-package main
+package actions
 
 import (
 	"reflect"
@@ -48,13 +48,13 @@ func Test_maxDateString(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		got, err := newerTimestamps(tt.args.stringSlice, tt.args.needle)
+		got, err := NewerTimestamps(tt.args.stringSlice, tt.args.needle)
 		if (err != nil) != tt.wantErr {
-			t.Errorf("%q. maxDateString(%v) error = %v, wantErr %v", tt.name, tt.args.stringSlice, err, tt.wantErr)
+			t.Errorf("%q. NewerTimestamps(%v) error = %v, wantErr %v", tt.name, tt.args.stringSlice, err, tt.wantErr)
 			continue
 		}
 		if !reflect.DeepEqual(got, tt.want) {
-			t.Errorf("%q. maxDateString(%v) = %v, want %v", tt.name, tt.args.stringSlice, got, tt.want)
+			t.Errorf("%q. NewerTimestamps(%v) = %v, want %v", tt.name, tt.args.stringSlice, got, tt.want)
 		}
 	}
 }

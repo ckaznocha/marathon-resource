@@ -1,4 +1,4 @@
-package main
+package marathon
 
 import (
 	"bytes"
@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/actions"
 	gomarathon "github.com/gambol99/go-marathon"
 )
 
@@ -26,7 +27,7 @@ type (
 		Do(req *http.Request) (*http.Response, error)
 	}
 	//Marathoner is an interface to interact with marathon
-	marathoner interface {
+	Marathoner interface {
 		LatestVersions(appID string, version string) ([]string, error)
 		GetApp(appID, version string) (gomarathon.Application, error)
 		UpdateApp(gomarathon.Application) (gomarathon.DeploymentID, error)
@@ -36,11 +37,12 @@ type (
 	marathon struct {
 		client doer
 		url    *url.URL
-		auth   *authCreds
+		auth   *actions.AuthCreds
 	}
 )
 
-func newMarathoner(client doer, uri *url.URL, auth *authCreds) marathoner {
+//NewMarathoner returns a new marathoner
+func NewMarathoner(client doer, uri *url.URL, auth *actions.AuthCreds) Marathoner {
 	return &marathon{client: client, url: uri}
 }
 
@@ -87,7 +89,7 @@ func (m *marathon) LatestVersions(appID, version string) ([]string, error) {
 	); err != nil {
 		return nil, err
 	}
-	return newerTimestamps(v.Versions, version)
+	return actions.NewerTimestamps(v.Versions, version)
 }
 
 func (m *marathon) GetApp(appID, version string) (gomarathon.Application, error) {

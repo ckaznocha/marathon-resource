@@ -1,4 +1,4 @@
-package main
+package actions
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 	"github.com/aymerick/raymond"
 )
 
-func parsePayload(p params, path string) (io.Reader, error) {
+func parsePayload(p Params, path string) (io.Reader, error) {
 	var (
 		replacments = map[string]string{}
 		buf         = bytes.NewBuffer([]byte{})

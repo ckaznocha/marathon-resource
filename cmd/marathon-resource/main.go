@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/actions"
 )
 
 const (
@@ -14,44 +15,11 @@ const (
 	out   = "out"
 )
 
-type (
-	params struct {
-		AppJSON      string     `json:"app_json"`
-		Replacements []metadata `json:"replacements"`
-	}
-	authCreds struct {
-		UserName string `json:"user_name"`
-		Password string `json:"password"`
-	}
-	source struct {
-		AppID     string     `json:"app_id"`
-		URI       string     `json:"uri"`
-		BasicAuth *authCreds `json:"basic_auth"`
-	}
-	version struct {
-		Ref string `json:"ref"`
-	}
-	inputJSON struct {
-		Params  params  `json:"params"`
-		Source  source  `json:"source"`
-		Version version `json:"version"`
-	}
-	checkOut []version
-	metadata struct {
-		Name  string `json:"name"`
-		Value string `json:"value"`
-	}
-	ioOut struct {
-		Version  version    `json:"version"`
-		Metadata []metadata `json:"metadata"`
-	}
-)
-
 var logger = logrus.New()
 
 func main() {
 	var (
-		input   inputJSON
+		input   actions.InputJSON
 		decoder = json.NewDecoder(os.Stdin)
 		/*encoder*/ _ = json.NewEncoder(os.Stdout)
 	)
@@ -69,7 +37,7 @@ func main() {
 		logger.WithError(err).Fatalf("Malformed URI %s", input.Source.URI)
 	}
 
-	// m := newMarathoner(&http.Client{}, uri, source.BasicAuth)
+	//m := marathon.NewMarathoner(&http.Client{}, uri, source.BasicAuth)
 
 	switch os.Args[1] {
 	case check:
