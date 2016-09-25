@@ -1,22 +1,18 @@
 package actions
 
+import "github.com/ckaznocha/marathon-resource/cmd/marathon-resource/marathon"
+
 //Params holds the values supported in by the concourse `params` array
 type Params struct {
 	AppJSON      string     `json:"app_json"`
 	Replacements []Metadata `json:"replacements"`
 }
 
-//AuthCreds will be used for HTTP basic auth
-type AuthCreds struct {
-	UserName string `json:"user_name"`
-	Password string `json:"password"`
-}
-
 //Source holds the values supported in by the concourse `source` array
 type Source struct {
-	AppID     string     `json:"app_id"`
-	URI       string     `json:"uri"`
-	BasicAuth *AuthCreds `json:"basic_auth"`
+	AppID     string              `json:"app_id"`
+	URI       string              `json:"uri"`
+	BasicAuth *marathon.AuthCreds `json:"basic_auth"`
 }
 
 //Version maps to a concousre version
