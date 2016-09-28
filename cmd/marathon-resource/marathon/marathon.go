@@ -73,7 +73,9 @@ func (m *marathon) handleReq(
 	if err != nil {
 		return err
 	}
-	defer res.Body.Close()
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
 
 	gotWantCode := false
 	for _, wantCode := range wantCodes {
@@ -89,6 +91,10 @@ func (m *marathon) handleReq(
 			wantCodes,
 			res.StatusCode,
 		)
+	}
+
+	if res.Body == nil {
+		return nil
 	}
 
 	if err = json.NewDecoder(res.Body).Decode(resObj); err != nil && err != io.EOF {
