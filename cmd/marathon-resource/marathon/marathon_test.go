@@ -364,6 +364,13 @@ func Test_marathon_DeleteDeployment(t *testing.T) {
 		},
 		nil,
 	)
+	mockClient.EXPECT().Do(gomock.Any()).Times(1).Return(
+		&http.Response{
+			StatusCode: http.StatusOK,
+			Body:       nil,
+		},
+		nil,
+	)
 	type fields struct {
 		client doer
 		url    *url.URL
@@ -377,7 +384,8 @@ func Test_marathon_DeleteDeployment(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{"Works", fields{mockClient, u}, args{"foo"}, false},
+		{"Works with empty string in retrun body", fields{mockClient, u}, args{"foo"}, false},
+		{"Works with nil in retrun body", fields{mockClient, u}, args{"foo"}, false},
 	}
 	for _, tt := range tests {
 		m := &marathon{
