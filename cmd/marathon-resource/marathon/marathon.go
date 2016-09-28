@@ -93,7 +93,7 @@ func (m *marathon) handleReq(
 		)
 	}
 
-	if res.Body == nil {
+	if res.Body == nil || resObj == nil {
 		return nil
 	}
 
