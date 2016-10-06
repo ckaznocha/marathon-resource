@@ -104,3 +104,15 @@ deployloop:
 	return IOOutput{Version: Version{Ref: did.Version}}, nil
 
 }
+
+// In shall
+func In(input InputJSON, apiclient marathon.Marathoner) (IOOutput, error) {
+
+	app, err := apiclient.GetApp(input.Source.AppID, input.Version.Ref)
+	if err != nil {
+		return IOOutput{}, err
+	}
+
+	return IOOutput{Version: Version{Ref: app.Version}}, nil
+
+}
