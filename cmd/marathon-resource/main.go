@@ -44,8 +44,17 @@ func main() {
 	switch os.Args[1] {
 	case check:
 		//TODO: do check
+
 	case in:
-		//TODO: do in
+		output, err := actions.In(input, m)
+		if err != nil {
+			logger.WithError(err).Fatalf("Unable to get APP info from marathon: %s", err)
+		}
+		if err = encoder.Encode(output); err != nil {
+			logger.WithError(err).Fatalf("Failed to write output: %s", err)
+		}
+		return
+
 	case out:
 		output, err := actions.Out(input, os.Args[2], m)
 		if err != nil {
