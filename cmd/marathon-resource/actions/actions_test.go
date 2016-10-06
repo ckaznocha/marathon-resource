@@ -210,3 +210,66 @@ func TestIn(t *testing.T) {
 		}
 	}
 }
+
+func TestCheck(t *testing.T) {
+	var (
+		ctrl           = gomock.NewController(t)
+		mockMarathoner = mocks.NewMockMarathoner(ctrl)
+	)
+	defer ctrl.Finish()
+
+	gomock.InOrder(
+		mockMarathoner.EXPECT().LatestVersions("bar", "").Times(1).Return([]string{"a", "b", "c"}, nil),
+		mockMarathoner.EXPECT().LatestVersions("bar", "").Times(1).Return([]string{}, errors.New("totally whack")),
+	)
+
+	type args struct {
+		input     InputJSON
+		apiclient marathon.Marathoner
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    CheckOutput
+		wantErr bool
+	}{
+		{
+			"Works",
+			args{
+				input: InputJSON{
+					Source:  Source{AppID: "bar"},
+					Version: Version{Ref: ""},
+				},
+				apiclient: mockMarathoner,
+			},
+			CheckOutput{
+				Version{Ref: "a"},
+				Version{Ref: "b"},
+				Version{Ref: "c"},
+			},
+			false,
+		},
+		{
+			"Errors",
+			args{
+				input: InputJSON{
+					Source:  Source{AppID: "bar"},
+					Version: Version{Ref: ""},
+				},
+				apiclient: mockMarathoner,
+			},
+			CheckOutput{},
+			true,
+		},
+	}
+	for _, tt := range tests {
+		got, err := Check(tt.args.input, tt.args.apiclient)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("%q. Check() error = %v, wantErr %v", tt.name, err, tt.wantErr)
+			continue
+		}
+		if !reflect.DeepEqual(got, tt.want) {
+			t.Errorf("%q. Check() = %v, want %v", tt.name, got, tt.want)
+		}
+	}
+}

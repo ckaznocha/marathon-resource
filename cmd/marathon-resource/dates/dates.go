@@ -30,6 +30,10 @@ func NewerTimestamps(
 		timestamps[i] = t
 	}
 
+	if len(currentTimestampString) == 0 {
+		currentTimestampString = time.Unix(0, 0).Format(time.RFC3339Nano)
+	}
+
 	currentTimestamp, err := time.Parse(
 		time.RFC3339Nano,
 		currentTimestampString,

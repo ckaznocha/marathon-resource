@@ -105,7 +105,7 @@ deployloop:
 
 }
 
-// In shall
+// In shall fetch info on current version
 func In(input InputJSON, apiclient marathon.Marathoner) (IOOutput, error) {
 
 	app, err := apiclient.GetApp(input.Source.AppID, input.Version.Ref)
@@ -114,5 +114,22 @@ func In(input InputJSON, apiclient marathon.Marathoner) (IOOutput, error) {
 	}
 
 	return IOOutput{Version: Version{Ref: app.Version}}, nil
+
+}
+
+// Check shall get the latest versions
+func Check(input InputJSON, apiclient marathon.Marathoner) (CheckOutput, error) {
+
+	versions, err := apiclient.LatestVersions(input.Source.AppID, input.Version.Ref)
+	if err != nil {
+		return CheckOutput{}, err
+	}
+
+	var out = CheckOutput{}
+	for _, v := range versions {
+		out = append(out, Version{Ref: v})
+	}
+
+	return out, nil
 
 }
