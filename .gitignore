@@ -1,5 +1,6 @@
 concourse
 playa-mesos
+coverage.out
 
 ### Linux ###
 *~
