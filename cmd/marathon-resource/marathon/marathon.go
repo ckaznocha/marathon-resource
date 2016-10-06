@@ -66,7 +66,7 @@ func (m *marathon) handleReq(
 		return err
 	}
 	req.Header.Set("Content-type", jsonContentType)
-	if m.auth != nil {
+	if m.auth != nil && len(m.auth.UserName) > 0 {
 		req.SetBasicAuth(m.auth.UserName, m.auth.Password)
 	}
 	res, err := m.client.Do(req)
