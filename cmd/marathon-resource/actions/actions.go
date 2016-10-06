@@ -11,9 +11,9 @@ import (
 
 //Params holds the values supported in by the concourse `params` array
 type Params struct {
-	AppJSON      string        `json:"app_json"`
-	TimeOut      time.Duration `json:"time_out"`
-	Replacements []Metadata    `json:"replacements"`
+	AppJSON      string     `json:"app_json"`
+	TimeOut      int        `json:"time_out"`
+	Replacements []Metadata `json:"replacements"`
 }
 
 //Source holds the values supported in by the concourse `source` array
@@ -71,7 +71,7 @@ func Out(input InputJSON, appJSONPath string, apiclient marathon.Marathoner) (IO
 		return IOOutput{}, err
 	}
 
-	timer := time.NewTimer(input.Params.TimeOut * time.Second)
+	timer := time.NewTimer(time.Duration(input.Params.TimeOut) * time.Second)
 	deploying := true
 
 	// Check if APP was deployed.
