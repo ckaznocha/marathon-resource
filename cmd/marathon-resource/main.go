@@ -26,6 +26,9 @@ func main() {
 		encoder = json.NewEncoder(os.Stdout)
 	)
 
+	logger.Out = os.Stderr
+	logger.Level = logrus.InfoLevel
+
 	if len(os.Args) < 2 {
 		logger.Fatal("You must one or more arguments")
 	}
@@ -39,7 +42,7 @@ func main() {
 		logger.WithError(err).Fatalf("Malformed URI %s", input.Source.URI)
 	}
 
-	m := marathon.NewMarathoner(&http.Client{}, uri, input.Source.BasicAuth)
+	m := marathon.NewMarathoner(&http.Client{}, uri, input.Source.BasicAuth, logger)
 
 	switch os.Args[1] {
 	case check:

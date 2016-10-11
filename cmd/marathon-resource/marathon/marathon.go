@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/dates"
 	gomarathon "github.com/gambol99/go-marathon"
 )
@@ -38,6 +39,7 @@ type (
 		client doer
 		url    *url.URL
 		auth   *AuthCreds
+		logger logrus.FieldLogger
 	}
 
 	//AuthCreds will be used for HTTP basic auth
@@ -48,8 +50,12 @@ type (
 )
 
 //NewMarathoner returns a new marathoner
-func NewMarathoner(client doer, uri *url.URL, auth *AuthCreds) Marathoner {
-	return &marathon{client: client, url: uri}
+func NewMarathoner(
+	client doer,
+	uri *url.URL,
+	auth *AuthCreds,
+	logger logrus.FieldLogger) Marathoner {
+	return &marathon{client: client, url: uri, logger: logger}
 }
 
 func (m *marathon) handleReq(
@@ -69,6 +75,12 @@ func (m *marathon) handleReq(
 	if m.auth != nil && len(m.auth.UserName) > 0 {
 		req.SetBasicAuth(m.auth.UserName, m.auth.Password)
 	}
+	m.logger.WithFields(
+		logrus.Fields{
+			"Method": req.Method,
+			"URL":    req.URL.String(),
+		},
+	).Info("Sending HTTP API request to Marathon")
 	res, err := m.client.Do(req)
 	if err != nil {
 		return err
