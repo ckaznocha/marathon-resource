@@ -9,6 +9,12 @@
 			"revisionTime": "2016-08-13T15:40:05Z"
 		},
 		{
+			"checksumSHA1": "Lglgc8iIRhqbqd8fpAZKpo/eqeY=",
+			"path": "github.com/Sirupsen/logrus/hooks/test",
+			"revision": "3ec0642a7fb6488f65b06f9040adc67e3990296a",
+			"revisionTime": "2016-08-29T20:23:21Z"
+		},
+		{
 			"checksumSHA1": "hjj6ZzJymmnFaocvyFpL6yR3LLU=",
 			"path": "github.com/aymerick/raymond",
 			"revision": "a2232af10b53ef1ae5a767f5178db3a6c1dab655",
@@ -55,6 +61,12 @@
 			"path": "github.com/google/go-querystring/query",
 			"revision": "9235644dd9e52eeae6fa48efd539fdc351a0af53",
 			"revisionTime": "2016-03-11T01:20:12Z"
+		},
+		{
+			"checksumSHA1": "8fD/im5Kwvy3JgmxulDTambmE8w=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "a646d33e2ee3172a661fc09bca23bb4889a41bc8",
+			"revisionTime": "2016-07-15T05:43:45Z"
 		}
 	],
 	"rootPath": "github.com/ckaznocha/marathon-resource"
