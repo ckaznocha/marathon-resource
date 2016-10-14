@@ -19,21 +19,36 @@ func TestOut(t *testing.T) {
 	defer ctrl.Finish()
 
 	gomock.InOrder(
-		mockMarathoner.EXPECT().UpdateApp(gomock.Any()).Times(1).Return(gomarathon.DeploymentID{DeploymentID: "foo", Version: "bar"}, nil),
+		mockMarathoner.EXPECT().UpdateApp(gomock.Any()).Times(6).Return(gomarathon.DeploymentID{DeploymentID: "foo", Version: "bar"}, nil),
 		mockMarathoner.EXPECT().UpdateApp(gomock.Any()).Times(1).Return(gomarathon.DeploymentID{}, errors.New("Something went wrong")),
 		mockMarathoner.EXPECT().UpdateApp(gomock.Any()).Times(1).Return(gomarathon.DeploymentID{DeploymentID: "baz", Version: "bar"}, nil),
 		mockMarathoner.EXPECT().UpdateApp(gomock.Any()).Times(1).Return(gomarathon.DeploymentID{DeploymentID: "quux", Version: "bar"}, nil),
 		mockMarathoner.EXPECT().UpdateApp(gomock.Any()).Times(1).Return(gomarathon.DeploymentID{DeploymentID: "zork", Version: "bar"}, nil),
 	)
 	gomock.InOrder(
-		mockMarathoner.EXPECT().CheckDeployment("foo").Times(1).Return(false, nil),
+		mockMarathoner.EXPECT().CheckDeployment("foo").Times(3).Return(false, nil),
+		mockMarathoner.EXPECT().CheckDeployment("bing").Times(1).Return(false, nil),
+		mockMarathoner.EXPECT().CheckDeployment("foo").Times(3).Return(false, nil),
+		mockMarathoner.EXPECT().CheckDeployment("bing").Times(1).Return(false, errors.New("Something bad happend")),
 		mockMarathoner.EXPECT().CheckDeployment("baz").Times(2).Return(true, nil),
 		mockMarathoner.EXPECT().CheckDeployment("quux").Times(1).Return(false, errors.New("Something bad happend")),
 		mockMarathoner.EXPECT().CheckDeployment("zork").Times(2).Return(true, nil),
 	)
 	gomock.InOrder(
 		mockMarathoner.EXPECT().DeleteDeployment("baz").Times(1).Return(nil),
-		mockMarathoner.EXPECT().DeleteDeployment("zork").Times(1).Return(errors.New("Now way!")),
+		mockMarathoner.EXPECT().DeleteDeployment("zork").Times(1).Return(errors.New("No way!")),
+	)
+	gomock.InOrder(
+		mockMarathoner.EXPECT().RestartApp(gomock.Any()).Times(1).Return(gomarathon.DeploymentID{DeploymentID: "bing", Version: "bar"}, nil),
+		mockMarathoner.EXPECT().RestartApp(gomock.Any()).Times(1).Return(gomarathon.DeploymentID{}, errors.New("No way!")),
+		mockMarathoner.EXPECT().RestartApp(gomock.Any()).Times(1).Return(gomarathon.DeploymentID{DeploymentID: "bing", Version: "bar"}, nil),
+	)
+	gomock.InOrder(
+		mockMarathoner.EXPECT().LatestVersions(gomock.Any(), "").Times(1).Return([]string{"bar"}, nil),
+		mockMarathoner.EXPECT().LatestVersions(gomock.Any(), "").Times(2).Return([]string{"baz"}, nil),
+		mockMarathoner.EXPECT().LatestVersions(gomock.Any(), "").Times(1).Return([]string{}, errors.New("No way!")),
+		mockMarathoner.EXPECT().LatestVersions(gomock.Any(), "").Times(1).Return([]string{"baz"}, nil),
+		mockMarathoner.EXPECT().LatestVersions(gomock.Any(), "").Times(1).Return([]string{"baz"}, nil),
 	)
 
 	type args struct {
@@ -59,6 +74,71 @@ func TestOut(t *testing.T) {
 			},
 			IOOutput{Version: Version{Ref: "bar"}},
 			false,
+		},
+		{
+			"No update",
+			args{
+				input: InputJSON{
+					Params: Params{AppJSON: "app.json", TimeOut: 2},
+					Source: Source{},
+				},
+				appJSONPath: "../fixtures",
+				apiclient:   mockMarathoner,
+			},
+			IOOutput{Version: Version{Ref: "baz"}},
+			false,
+		},
+		{
+			"No update, restart",
+			args{
+				input: InputJSON{
+					Params: Params{AppJSON: "app.json", TimeOut: 2, RestartIfNoUpdate: true},
+					Source: Source{},
+				},
+				appJSONPath: "../fixtures",
+				apiclient:   mockMarathoner,
+			},
+			IOOutput{Version: Version{Ref: "bar"}},
+			false,
+		},
+		{
+			"Erros fetching latest versions",
+			args{
+				input: InputJSON{
+					Params: Params{AppJSON: "app.json", TimeOut: 2, RestartIfNoUpdate: true},
+					Source: Source{},
+				},
+				appJSONPath: "../fixtures",
+				apiclient:   mockMarathoner,
+			},
+			IOOutput{},
+			true,
+		},
+		{
+			"Erros restarting app",
+			args{
+				input: InputJSON{
+					Params: Params{AppJSON: "app.json", TimeOut: 2, RestartIfNoUpdate: true},
+					Source: Source{},
+				},
+				appJSONPath: "../fixtures",
+				apiclient:   mockMarathoner,
+			},
+			IOOutput{},
+			true,
+		},
+		{
+			"Erros on second deplyment check",
+			args{
+				input: InputJSON{
+					Params: Params{AppJSON: "app.json", TimeOut: 2, RestartIfNoUpdate: true},
+					Source: Source{},
+				},
+				appJSONPath: "../fixtures",
+				apiclient:   mockMarathoner,
+			},
+			IOOutput{},
+			true,
 		},
 		{
 			"Bad app json file",

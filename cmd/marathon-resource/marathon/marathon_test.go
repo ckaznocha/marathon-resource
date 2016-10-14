@@ -312,6 +312,54 @@ func Test_marathon_UpdateApp(t *testing.T) {
 	}
 }
 
+func Test_marathon_RestartApp(t *testing.T) {
+	var (
+		logger, _  = test.NewNullLogger()
+		ctrl       = gomock.NewController(t)
+		mockClient = mocks.NewMockdoer(ctrl)
+		u, _       = url.Parse("http://foo.bar/")
+	)
+	defer ctrl.Finish()
+	out, _ := json.Marshal(gomarathon.DeploymentID{DeploymentID: "foo"})
+	mockClient.EXPECT().Do(gomock.Any()).Times(1).Return(
+		&http.Response{
+			StatusCode: http.StatusOK,
+			Body:       ioutil.NopCloser(bytes.NewReader(out)),
+		},
+		nil,
+	)
+	type fields struct {
+		client doer
+		url    *url.URL
+	}
+	type args struct {
+		inApp string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    gomarathon.DeploymentID
+		wantErr bool
+	}{
+		{"Works", fields{mockClient, u}, args{"foo-app"}, gomarathon.DeploymentID{DeploymentID: "foo"}, false},
+	}
+	for _, tt := range tests {
+		m := &marathon{
+			client: tt.fields.client,
+			url:    tt.fields.url,
+			logger: logger,
+		}
+		got, err := m.RestartApp(tt.args.inApp)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("%q. marathon.RestartApp(%v) error = %v, wantErr %v", tt.name, tt.args.inApp, err, tt.wantErr)
+			continue
+		}
+		if !reflect.DeepEqual(got, tt.want) {
+			t.Errorf("%q. marathon.RestartApp(%v) = %v, want %v", tt.name, tt.args.inApp, got, tt.want)
+		}
+	}
+}
 func Test_marathon_CheckDeployment(t *testing.T) {
 	var (
 		logger, _  = test.NewNullLogger()
