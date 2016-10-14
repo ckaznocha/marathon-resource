@@ -15,6 +15,7 @@ import (
 
 const (
 	pathApp          = "/v2/apps/%s"
+	pathAppRestart   = "/v2/apps/%s/restart"
 	pathAppVersions  = "/v2/apps/%s/versions"
 	pathAppAtVersion = "/v2/apps/%s/versions/%s"
 	pathDeployments  = "/v2/deployments"
@@ -32,6 +33,7 @@ type (
 		LatestVersions(appID string, version string) ([]string, error)
 		GetApp(appID, version string) (gomarathon.Application, error)
 		UpdateApp(gomarathon.Application) (gomarathon.DeploymentID, error)
+		RestartApp(appID string) (gomarathon.DeploymentID, error)
 		CheckDeployment(deploymentID string) (bool, error)
 		DeleteDeployment(deploymentID string) error
 	}
@@ -72,7 +74,7 @@ func (m *marathon) handleReq(
 		return err
 	}
 	req.Header.Set("Content-type", jsonContentType)
-	if m.auth != nil && len(m.auth.UserName) > 0 {
+	if m.auth != nil {
 		req.SetBasicAuth(m.auth.UserName, m.auth.Password)
 	}
 	m.logger.WithFields(
@@ -151,6 +153,20 @@ func (m *marathon) UpdateApp(inApp gomarathon.Application) (gomarathon.Deploymen
 		fmt.Sprintf(pathApp, inApp.ID),
 		bytes.NewReader(payload),
 		[]int{http.StatusOK, http.StatusCreated},
+		&deployment,
+	)
+	return deployment, err
+}
+
+func (m *marathon) RestartApp(appID string) (gomarathon.DeploymentID, error) {
+	var (
+		deployment gomarathon.DeploymentID
+	)
+	err := m.handleReq(
+		http.MethodPost,
+		fmt.Sprintf(pathAppRestart, appID),
+		nil,
+		[]int{http.StatusOK},
 		&deployment,
 	)
 	return deployment, err
