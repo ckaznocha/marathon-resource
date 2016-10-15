@@ -1,4 +1,4 @@
-package actions
+package behaviors
 
 import (
 	"bytes"

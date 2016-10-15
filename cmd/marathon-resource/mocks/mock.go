@@ -4,12 +4,13 @@
 package mocks
 
 import (
+	http "net/http"
+
 	go_marathon "github.com/gambol99/go-marathon"
 	gomock "github.com/golang/mock/gomock"
-	http "net/http"
 )
 
-// Mock of doer interface
+// Mockdoer is a mock of doer interface
 type Mockdoer struct {
 	ctrl     *gomock.Controller
 	recorder *_MockdoerRecorder
@@ -20,16 +21,19 @@ type _MockdoerRecorder struct {
 	mock *Mockdoer
 }
 
+// NewMockdoer returns a Mockdoer
 func NewMockdoer(ctrl *gomock.Controller) *Mockdoer {
 	mock := &Mockdoer{ctrl: ctrl}
 	mock.recorder = &_MockdoerRecorder{mock}
 	return mock
 }
 
+// EXPECT ...
 func (_m *Mockdoer) EXPECT() *_MockdoerRecorder {
 	return _m.recorder
 }
 
+// Do ...
 func (_m *Mockdoer) Do(req *http.Request) (*http.Response, error) {
 	ret := _m.ctrl.Call(_m, "Do", req)
 	ret0, _ := ret[0].(*http.Response)
@@ -41,7 +45,7 @@ func (_mr *_MockdoerRecorder) Do(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Do", arg0)
 }
 
-// Mock of Marathoner interface
+// MockMarathoner is a mock of Marathoner interface
 type MockMarathoner struct {
 	ctrl     *gomock.Controller
 	recorder *_MockMarathonerRecorder
@@ -52,16 +56,19 @@ type _MockMarathonerRecorder struct {
 	mock *MockMarathoner
 }
 
+// NewMockMarathoner returns a MockMarathoner
 func NewMockMarathoner(ctrl *gomock.Controller) *MockMarathoner {
 	mock := &MockMarathoner{ctrl: ctrl}
 	mock.recorder = &_MockMarathonerRecorder{mock}
 	return mock
 }
 
+// EXPECT ...
 func (_m *MockMarathoner) EXPECT() *_MockMarathonerRecorder {
 	return _m.recorder
 }
 
+// LatestVersions ...
 func (_m *MockMarathoner) LatestVersions(appID string, version string) ([]string, error) {
 	ret := _m.ctrl.Call(_m, "LatestVersions", appID, version)
 	ret0, _ := ret[0].([]string)
@@ -73,6 +80,7 @@ func (_mr *_MockMarathonerRecorder) LatestVersions(arg0, arg1 interface{}) *gomo
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "LatestVersions", arg0, arg1)
 }
 
+// GetApp ...
 func (_m *MockMarathoner) GetApp(appID string, version string) (go_marathon.Application, error) {
 	ret := _m.ctrl.Call(_m, "GetApp", appID, version)
 	ret0, _ := ret[0].(go_marathon.Application)
@@ -84,6 +92,7 @@ func (_mr *_MockMarathonerRecorder) GetApp(arg0, arg1 interface{}) *gomock.Call 
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "GetApp", arg0, arg1)
 }
 
+// UpdateApp ...
 func (_m *MockMarathoner) UpdateApp(_param0 go_marathon.Application) (go_marathon.DeploymentID, error) {
 	ret := _m.ctrl.Call(_m, "UpdateApp", _param0)
 	ret0, _ := ret[0].(go_marathon.DeploymentID)
@@ -95,6 +104,7 @@ func (_mr *_MockMarathonerRecorder) UpdateApp(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "UpdateApp", arg0)
 }
 
+// RestartApp ...
 func (_m *MockMarathoner) RestartApp(appID string) (go_marathon.DeploymentID, error) {
 	ret := _m.ctrl.Call(_m, "RestartApp", appID)
 	ret0, _ := ret[0].(go_marathon.DeploymentID)
@@ -106,6 +116,7 @@ func (_mr *_MockMarathonerRecorder) RestartApp(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "RestartApp", arg0)
 }
 
+// CheckDeployment ...
 func (_m *MockMarathoner) CheckDeployment(deploymentID string) (bool, error) {
 	ret := _m.ctrl.Call(_m, "CheckDeployment", deploymentID)
 	ret0, _ := ret[0].(bool)
@@ -117,6 +128,7 @@ func (_mr *_MockMarathonerRecorder) CheckDeployment(arg0 interface{}) *gomock.Ca
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "CheckDeployment", arg0)
 }
 
+// DeleteDeployment ...
 func (_m *MockMarathoner) DeleteDeployment(deploymentID string) error {
 	ret := _m.ctrl.Call(_m, "DeleteDeployment", deploymentID)
 	ret0, _ := ret[0].(error)
