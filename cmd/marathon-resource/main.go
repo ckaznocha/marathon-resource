@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/actions"
+	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/behaviors"
 	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/marathon"
 )
 
@@ -21,7 +21,7 @@ var logger = logrus.New()
 
 func main() {
 	var (
-		input   actions.InputJSON
+		input   behaviors.InputJSON
 		decoder = json.NewDecoder(os.Stdin)
 		encoder = json.NewEncoder(os.Stdout)
 	)
@@ -46,7 +46,7 @@ func main() {
 
 	switch os.Args[1] {
 	case check:
-		output, err := actions.Check(input, m)
+		output, err := behaviors.Check(input, m)
 		if err != nil {
 			logger.WithError(err).Fatalf("Unable to get APP info from marathon: %s", err)
 		}
@@ -56,7 +56,7 @@ func main() {
 		return
 
 	case in:
-		output, err := actions.In(input, m)
+		output, err := behaviors.In(input, m)
 		if err != nil {
 			logger.WithError(err).Fatalf("Unable to get APP info from marathon: %s", err)
 		}
@@ -66,7 +66,7 @@ func main() {
 		return
 
 	case out:
-		output, err := actions.Out(input, os.Args[2], m)
+		output, err := behaviors.Out(input, os.Args[2], m)
 		if err != nil {
 			logger.WithError(err).Fatalf("Unable to deply APP to marathon: %s", err)
 		}

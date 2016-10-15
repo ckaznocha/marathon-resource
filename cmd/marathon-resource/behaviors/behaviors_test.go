@@ -1,4 +1,4 @@
-package actions
+package behaviors
 
 import (
 	"errors"
@@ -29,9 +29,9 @@ func TestOut(t *testing.T) {
 		mockMarathoner.EXPECT().CheckDeployment("foo").Times(3).Return(false, nil),
 		mockMarathoner.EXPECT().CheckDeployment("bing").Times(1).Return(false, nil),
 		mockMarathoner.EXPECT().CheckDeployment("foo").Times(3).Return(false, nil),
-		mockMarathoner.EXPECT().CheckDeployment("bing").Times(1).Return(false, errors.New("Something bad happend")),
+		mockMarathoner.EXPECT().CheckDeployment("bing").Times(1).Return(false, errors.New("Something bad happened")),
 		mockMarathoner.EXPECT().CheckDeployment("baz").Times(2).Return(true, nil),
-		mockMarathoner.EXPECT().CheckDeployment("quux").Times(1).Return(false, errors.New("Something bad happend")),
+		mockMarathoner.EXPECT().CheckDeployment("quux").Times(1).Return(false, errors.New("Something bad happened")),
 		mockMarathoner.EXPECT().CheckDeployment("zork").Times(2).Return(true, nil),
 	)
 	gomock.InOrder(
