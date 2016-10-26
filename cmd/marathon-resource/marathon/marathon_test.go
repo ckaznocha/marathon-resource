@@ -81,7 +81,7 @@ func Test_marathon_handleReq(t *testing.T) {
 		logger, _  = test.NewNullLogger()
 		ctrl       = gomock.NewController(t)
 		mockClient = mocks.NewMockdoer(ctrl)
-		u, _       = url.Parse("http://foo.bar/")
+		u, _       = url.Parse("http://foo.bar/marathon/")
 	)
 	defer ctrl.Finish()
 	mockClient.EXPECT().Do(gomock.Any()).Times(2).Return(

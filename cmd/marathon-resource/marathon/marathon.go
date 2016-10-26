@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"path"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/dates"
@@ -62,13 +63,13 @@ func NewMarathoner(
 
 func (m *marathon) handleReq(
 	method string,
-	path string,
+	resourcePath string,
 	payload io.Reader,
 	wantCodes []int,
 	resObj interface{},
 ) error {
 	u := *m.url
-	u.Path = path
+	u.Path = path.Join(u.Path, resourcePath)
 	req, err := http.NewRequest(method, u.String(), payload)
 	if err != nil {
 		return err
