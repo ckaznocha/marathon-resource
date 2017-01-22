@@ -1,0 +1,73 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "DprM1qQxsuxtvDP2f/GQ3Agj/jo=",
+			"path": "github.com/Sirupsen/logrus",
+			"revision": "08a8a7c27e3d058a8989316a850daad1c10bf4ab",
+			"revisionTime": "2016-08-13T15:40:05Z"
+		},
+		{
+			"checksumSHA1": "Lglgc8iIRhqbqd8fpAZKpo/eqeY=",
+			"path": "github.com/Sirupsen/logrus/hooks/test",
+			"revision": "3ec0642a7fb6488f65b06f9040adc67e3990296a",
+			"revisionTime": "2016-08-29T20:23:21Z"
+		},
+		{
+			"checksumSHA1": "hjj6ZzJymmnFaocvyFpL6yR3LLU=",
+			"path": "github.com/aymerick/raymond",
+			"revision": "a2232af10b53ef1ae5a767f5178db3a6c1dab655",
+			"revisionTime": "2016-06-01T19:06:02Z"
+		},
+		{
+			"checksumSHA1": "Rvn+RH9pwFno1w6W+mhWsj/PxlA=",
+			"path": "github.com/aymerick/raymond/ast",
+			"revision": "a2232af10b53ef1ae5a767f5178db3a6c1dab655",
+			"revisionTime": "2016-06-01T19:06:02Z"
+		},
+		{
+			"checksumSHA1": "5SJwPK0MYtJt5YiE1BNc9Wl3+S0=",
+			"path": "github.com/aymerick/raymond/lexer",
+			"revision": "a2232af10b53ef1ae5a767f5178db3a6c1dab655",
+			"revisionTime": "2016-06-01T19:06:02Z"
+		},
+		{
+			"checksumSHA1": "TCu/8QBP8TApLjSt13a7Qjnyxrs=",
+			"path": "github.com/aymerick/raymond/parser",
+			"revision": "a2232af10b53ef1ae5a767f5178db3a6c1dab655",
+			"revisionTime": "2016-06-01T19:06:02Z"
+		},
+		{
+			"checksumSHA1": "O/eUfUoi7lWgZiipUP939AAdKk4=",
+			"path": "github.com/donovanhide/eventsource",
+			"revision": "fd1de70867126402be23c306e1ce32828455d85b",
+			"revisionTime": "2016-05-25T20:46:10Z"
+		},
+		{
+			"checksumSHA1": "zm1zp81jlZhIpBZMic+BXztYOG4=",
+			"path": "github.com/gambol99/go-marathon",
+			"revision": "a2b7150eac3175ec91a792acef9dcabd1a9e6e28",
+			"revisionTime": "2016-08-01T15:04:07Z"
+		},
+		{
+			"checksumSHA1": "JSHl8b3nI8EWvzm+uyrIqj2Hiu4=",
+			"path": "github.com/golang/mock/gomock",
+			"revision": "bd3c8e81be01eef76d4b503f5e687d2d1354d2d9",
+			"revisionTime": "2016-01-21T18:51:14Z"
+		},
+		{
+			"checksumSHA1": "yyAzHoiVLu+xywYI2BDyRq6sOqE=",
+			"path": "github.com/google/go-querystring/query",
+			"revision": "9235644dd9e52eeae6fa48efd539fdc351a0af53",
+			"revisionTime": "2016-03-11T01:20:12Z"
+		},
+		{
+			"checksumSHA1": "8fD/im5Kwvy3JgmxulDTambmE8w=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "a646d33e2ee3172a661fc09bca23bb4889a41bc8",
+			"revisionTime": "2016-07-15T05:43:45Z"
+		}
+	],
+	"rootPath": "github.com/ckaznocha/marathon-resource"
+}

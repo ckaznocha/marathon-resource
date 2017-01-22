@@ -7,13 +7,16 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"path"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/ckaznocha/marathon-resource/cmd/marathon-resource/dates"
 	gomarathon "github.com/gambol99/go-marathon"
 )
 
 const (
 	pathApp          = "/v2/apps/%s"
+	pathAppRestart   = "/v2/apps/%s/restart"
 	pathAppVersions  = "/v2/apps/%s/versions"
 	pathAppAtVersion = "/v2/apps/%s/versions/%s"
 	pathDeployments  = "/v2/deployments"
@@ -31,13 +34,16 @@ type (
 		LatestVersions(appID string, version string) ([]string, error)
 		GetApp(appID, version string) (gomarathon.Application, error)
 		UpdateApp(gomarathon.Application) (gomarathon.DeploymentID, error)
+		RestartApp(appID string) (gomarathon.DeploymentID, error)
 		CheckDeployment(deploymentID string) (bool, error)
 		DeleteDeployment(deploymentID string) error
 	}
 	marathon struct {
-		client doer
-		url    *url.URL
-		auth   *AuthCreds
+		client   doer
+		url      *url.URL
+		auth     *AuthCreds
+		apiToken string
+		logger   logrus.FieldLogger
 	}
 
 	//AuthCreds will be used for HTTP basic auth
@@ -48,19 +54,30 @@ type (
 )
 
 //NewMarathoner returns a new marathoner
-func NewMarathoner(client doer, uri *url.URL, auth *AuthCreds) Marathoner {
-	return &marathon{client: client, url: uri}
+func NewMarathoner(
+	client doer,
+	uri *url.URL,
+	auth *AuthCreds,
+	apiToken string,
+	logger logrus.FieldLogger) Marathoner {
+	return &marathon{
+		client:   client,
+		url:      uri,
+		auth:     auth,
+		apiToken: apiToken,
+		logger:   logger,
+	}
 }
 
 func (m *marathon) handleReq(
 	method string,
-	path string,
+	resourcePath string,
 	payload io.Reader,
 	wantCodes []int,
 	resObj interface{},
 ) error {
 	u := *m.url
-	u.Path = path
+	u.Path = path.Join(u.Path, resourcePath)
 	req, err := http.NewRequest(method, u.String(), payload)
 	if err != nil {
 		return err
@@ -69,11 +86,23 @@ func (m *marathon) handleReq(
 	if m.auth != nil {
 		req.SetBasicAuth(m.auth.UserName, m.auth.Password)
 	}
+	if m.apiToken != "" {
+		req.Header.Set("Authorization", fmt.Sprintf("token=%s", m.apiToken))
+	}
+
+	m.logger.WithFields(
+		logrus.Fields{
+			"Method": req.Method,
+			"URL":    req.URL.String(),
+		},
+	).Info("Sending HTTP API request to Marathon")
 	res, err := m.client.Do(req)
 	if err != nil {
 		return err
 	}
-	defer res.Body.Close()
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
 
 	gotWantCode := false
 	for _, wantCode := range wantCodes {
@@ -89,6 +118,10 @@ func (m *marathon) handleReq(
 			wantCodes,
 			res.StatusCode,
 		)
+	}
+
+	if res.Body == nil || resObj == nil {
+		return nil
 	}
 
 	if err = json.NewDecoder(res.Body).Decode(resObj); err != nil && err != io.EOF {
@@ -133,6 +166,20 @@ func (m *marathon) UpdateApp(inApp gomarathon.Application) (gomarathon.Deploymen
 		fmt.Sprintf(pathApp, inApp.ID),
 		bytes.NewReader(payload),
 		[]int{http.StatusOK, http.StatusCreated},
+		&deployment,
+	)
+	return deployment, err
+}
+
+func (m *marathon) RestartApp(appID string) (gomarathon.DeploymentID, error) {
+	var (
+		deployment gomarathon.DeploymentID
+	)
+	err := m.handleReq(
+		http.MethodPost,
+		fmt.Sprintf(pathAppRestart, appID),
+		nil,
+		[]int{http.StatusOK},
 		&deployment,
 	)
 	return deployment, err
