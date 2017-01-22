@@ -42,7 +42,7 @@ func main() {
 		logger.WithError(err).Fatalf("Malformed URI %s", input.Source.URI)
 	}
 
-	m := marathon.NewMarathoner(&http.Client{}, uri, input.Source.BasicAuth, logger)
+	m := marathon.NewMarathoner(&http.Client{}, uri, input.Source.BasicAuth, input.Source.APIToken, logger)
 
 	switch os.Args[1] {
 	case check:

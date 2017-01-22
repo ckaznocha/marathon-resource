@@ -39,10 +39,11 @@ type (
 		DeleteDeployment(deploymentID string) error
 	}
 	marathon struct {
-		client doer
-		url    *url.URL
-		auth   *AuthCreds
-		logger logrus.FieldLogger
+		client   doer
+		url      *url.URL
+		auth     *AuthCreds
+		apiToken string
+		logger   logrus.FieldLogger
 	}
 
 	//AuthCreds will be used for HTTP basic auth
@@ -57,8 +58,15 @@ func NewMarathoner(
 	client doer,
 	uri *url.URL,
 	auth *AuthCreds,
+	apiToken string,
 	logger logrus.FieldLogger) Marathoner {
-	return &marathon{client: client, url: uri, logger: logger}
+	return &marathon{
+		client:   client,
+		url:      uri,
+		auth:     auth,
+		apiToken: apiToken,
+		logger:   logger,
+	}
 }
 
 func (m *marathon) handleReq(
@@ -78,6 +86,10 @@ func (m *marathon) handleReq(
 	if m.auth != nil {
 		req.SetBasicAuth(m.auth.UserName, m.auth.Password)
 	}
+	if m.apiToken != "" {
+		req.Header.Set("Authorization", fmt.Sprintf("token=%s", m.apiToken))
+	}
+
 	m.logger.WithFields(
 		logrus.Fields{
 			"Method": req.Method,
