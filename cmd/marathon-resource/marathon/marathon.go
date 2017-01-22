@@ -60,7 +60,13 @@ func NewMarathoner(
 	auth *AuthCreds,
 	apiToken string,
 	logger logrus.FieldLogger) Marathoner {
-	return &marathon{client: client, url: uri, auth: auth, apiToken: apiToken, logger: logger}
+	return &marathon{
+		client:   client,
+		url:      uri,
+		auth:     auth,
+		apiToken: apiToken,
+		logger:   logger,
+	}
 }
 
 func (m *marathon) handleReq(
@@ -81,7 +87,7 @@ func (m *marathon) handleReq(
 		req.SetBasicAuth(m.auth.UserName, m.auth.Password)
 	}
 	if m.apiToken != "" {
-		req.Header.Set("Authorization", "token="+m.apiToken)
+		req.Header.Set("Authorization", fmt.Sprintf("token=%s", m.apiToken))
 	}
 
 	m.logger.WithFields(

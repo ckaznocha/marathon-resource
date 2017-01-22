@@ -22,7 +22,7 @@ type Source struct {
 	AppID     string              `json:"app_id"`
 	URI       string              `json:"uri"`
 	BasicAuth *marathon.AuthCreds `json:"basic_auth"`
-	ApiToken  string              `json:"api_token"`
+	APIToken  string              `json:"api_token"`
 }
 
 //Version maps to a concousre version
