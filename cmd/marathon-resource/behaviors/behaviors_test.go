@@ -29,24 +29,24 @@ func TestOut(t *testing.T) {
 		mockMarathoner.EXPECT().CheckDeployment("foo").Times(3).Return(false, nil),
 		mockMarathoner.EXPECT().CheckDeployment("bing").Times(1).Return(false, nil),
 		mockMarathoner.EXPECT().CheckDeployment("foo").Times(3).Return(false, nil),
-		mockMarathoner.EXPECT().CheckDeployment("bing").Times(1).Return(false, errors.New("Something bad happened")),
+		mockMarathoner.EXPECT().CheckDeployment("bing").Times(1).Return(false, errors.New("something bad happened")),
 		mockMarathoner.EXPECT().CheckDeployment("baz").Times(2).Return(true, nil),
-		mockMarathoner.EXPECT().CheckDeployment("quux").Times(1).Return(false, errors.New("Something bad happened")),
+		mockMarathoner.EXPECT().CheckDeployment("quux").Times(1).Return(false, errors.New("something bad happened")),
 		mockMarathoner.EXPECT().CheckDeployment("zork").Times(2).Return(true, nil),
 	)
 	gomock.InOrder(
 		mockMarathoner.EXPECT().DeleteDeployment("baz").Times(1).Return(nil),
-		mockMarathoner.EXPECT().DeleteDeployment("zork").Times(1).Return(errors.New("No way!")),
+		mockMarathoner.EXPECT().DeleteDeployment("zork").Times(1).Return(errors.New("no way")),
 	)
 	gomock.InOrder(
 		mockMarathoner.EXPECT().RestartApp(gomock.Any()).Times(1).Return(gomarathon.DeploymentID{DeploymentID: "bing", Version: "bar"}, nil),
-		mockMarathoner.EXPECT().RestartApp(gomock.Any()).Times(1).Return(gomarathon.DeploymentID{}, errors.New("No way!")),
+		mockMarathoner.EXPECT().RestartApp(gomock.Any()).Times(1).Return(gomarathon.DeploymentID{}, errors.New("no way")),
 		mockMarathoner.EXPECT().RestartApp(gomock.Any()).Times(1).Return(gomarathon.DeploymentID{DeploymentID: "bing", Version: "bar"}, nil),
 	)
 	gomock.InOrder(
 		mockMarathoner.EXPECT().LatestVersions(gomock.Any(), "").Times(1).Return([]string{"bar"}, nil),
 		mockMarathoner.EXPECT().LatestVersions(gomock.Any(), "").Times(2).Return([]string{"baz"}, nil),
-		mockMarathoner.EXPECT().LatestVersions(gomock.Any(), "").Times(1).Return([]string{}, errors.New("No way!")),
+		mockMarathoner.EXPECT().LatestVersions(gomock.Any(), "").Times(1).Return([]string{}, errors.New("no way")),
 		mockMarathoner.EXPECT().LatestVersions(gomock.Any(), "").Times(1).Return([]string{"baz"}, nil),
 		mockMarathoner.EXPECT().LatestVersions(gomock.Any(), "").Times(1).Return([]string{"baz"}, nil),
 	)
