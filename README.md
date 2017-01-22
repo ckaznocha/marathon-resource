@@ -18,6 +18,8 @@ A [Concourse](https://concourse.ci/) resource to deploy applications to [Maratho
 
 *   `basic_auth`: *Optional.* Use if you are using HTTP Basic Auth to protect your Marathon instance. Takes `user_name` and `password`
 
+*   `api_token`: *Optional.* Use if you are using DC/OS and need to set an HTTP API token.
+
 ## Behavior
 
 ### `check`: Extract versions of an app from Marathon.
