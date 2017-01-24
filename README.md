@@ -45,7 +45,9 @@ Given a JSON file specified by `app_json`, post it to Marathon to deploy the app
 
 *   `time_out`: *Required.* How long, in seconds, to wait for Marathon to deploy the app. Timed out deployments will roll back and fail the job.
 
-*   `replacements`: *Optional.* A `name`/`value` list of templated strings in the app.json to replace during the deploy. Useful for things such as passwords or urls that change.
+*   `replacements`: *Optional.* A `name`/`value` list of templated strings in the app.json to replace during the deploy. Useful for things such as passwords or urls that change. If value is a file path the files content will replace value.
+
+*   `replacement_files`: *Optional.* Similar to `replacements` except value is a path to a file who's content will be used in the replace.
 
 *   `restart_if_no_update`: *Optional.* If Marathon doesn't detect any change in your app.json it won't deploy a new version. Setting this to `true` will restart an existing app causing a new version. Default is `false`.
 
