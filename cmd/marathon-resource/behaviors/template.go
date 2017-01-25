@@ -54,5 +54,5 @@ func replaceFiles(metadata []Metadata, replacements map[string]string, path stri
 		replacements[v.Name] = strings.TrimSpace(string(fileValue))
 	}
 
-	return replacements
+	return replacements, nil
 }
