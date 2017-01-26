@@ -19,6 +19,8 @@ func Test_parsePayload(t *testing.T) {
 	}{
 		{"Reads file with no replacements", args{Params{AppJSON: "app.json"}, "../fixtures"}, []byte{123, 10, 32, 32, 32, 32, 34, 102, 111, 111, 34, 58, 32, 34, 98, 97, 114, 34, 10, 125, 10}, false},
 		{"Reads file with replacements", args{Params{AppJSON: "app_template.json", Replacements: []Metadata{{"foo", "bar"}}}, "../fixtures"}, []byte{123, 10, 32, 32, 32, 32, 34, 102, 111, 111, 34, 58, 32, 34, 98, 97, 114, 34, 10, 125, 10}, false},
+		{"Reads file with replacement files", args{Params{AppJSON: "app_template.json", ReplacementFiles: []Metadata{{"foo", "foo.txt"}}}, "../fixtures"}, []byte{123, 10, 32, 32, 32, 32, 34, 102, 111, 111, 34, 58, 32, 34, 98, 97, 114, 34, 10, 125, 10}, false},
+		{"Reads file with missing replacement files", args{Params{AppJSON: "app_template.json", ReplacementFiles: []Metadata{{"foo", "baz.txt"}}}, "../fixtures"}, nil, true},
 		{"Reads file with bad tmpl", args{Params{AppJSON: "app_template_bad.json", Replacements: []Metadata{{"foo", "bar"}}}, "../fixtures"}, nil, true},
 	}
 	for _, tt := range tests {

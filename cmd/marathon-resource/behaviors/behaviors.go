@@ -14,6 +14,7 @@ type Params struct {
 	AppJSON           string     `json:"app_json"`
 	TimeOut           int        `json:"time_out"`
 	Replacements      []Metadata `json:"replacements"`
+	ReplacementFiles  []Metadata `json:"replacement_files"`
 	RestartIfNoUpdate bool       `json:"restart_if_no_update"`
 }
 
