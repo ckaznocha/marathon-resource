@@ -2,13 +2,13 @@ package behaviors
 
 import (
 	"bytes"
-	"io"
-	"path/filepath"
-
 	"fmt"
-	"github.com/aymerick/raymond"
+	"io"
 	"io/ioutil"
+	"path/filepath"
 	"strings"
+
+	"github.com/aymerick/raymond"
 )
 
 func parsePayload(p Params, path string) (io.Reader, error) {
@@ -37,7 +37,10 @@ func parsePayload(p Params, path string) (io.Reader, error) {
 	return buf, nil
 }
 
-func replaceStrings(metadata []Metadata, replacements map[string]string) map[string]string {
+func replaceStrings(
+	metadata []Metadata,
+	replacements map[string]string,
+) map[string]string {
 	for _, v := range metadata {
 		replacements[v.Name] = v.Value
 	}
@@ -45,11 +48,19 @@ func replaceStrings(metadata []Metadata, replacements map[string]string) map[str
 	return replacements
 }
 
-func replaceFiles(metadata []Metadata, replacements map[string]string, path string) (map[string]string, error) {
+func replaceFiles(
+	metadata []Metadata,
+	replacements map[string]string,
+	path string,
+) (map[string]string, error) {
 	for _, v := range metadata {
 		fileValue, err := ioutil.ReadFile(filepath.Join(path, v.Value))
 		if err != nil {
-			return replacements, fmt.Errorf("Error replaceing %s from replacement_files: %v", v.Name, err)
+			return replacements, fmt.Errorf(
+				"Error replaceing %s from replacement_files: %v",
+				v.Name,
+				err,
+			)
 		}
 		replacements[v.Name] = strings.TrimSpace(string(fileValue))
 	}
