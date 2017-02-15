@@ -57,7 +57,7 @@ func replaceFiles(
 		fileValue, err := ioutil.ReadFile(filepath.Join(path, v.Value))
 		if err != nil {
 			return replacements, fmt.Errorf(
-				"Error replaceing %s from replacement_files: %v",
+				"Error replacing %s from replacement_files: %v",
 				v.Name,
 				err,
 			)

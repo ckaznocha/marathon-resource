@@ -445,8 +445,8 @@ func Test_marathon_DeleteDeployment(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{"Works with empty string in retrun body", fields{mockClient, u}, args{"foo"}, false},
-		{"Works with nil in retrun body", fields{mockClient, u}, args{"foo"}, false},
+		{"Works with empty string in return body", fields{mockClient, u}, args{"foo"}, false},
+		{"Works with nil in return body", fields{mockClient, u}, args{"foo"}, false},
 	}
 	for _, tt := range tests {
 		m := &marathon{

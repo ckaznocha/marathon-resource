@@ -27,10 +27,9 @@ func main() {
 	)
 
 	logger.Out = os.Stderr
-	logger.Level = logrus.InfoLevel
 
 	if len(os.Args) < 2 {
-		logger.Fatal("You must one or more arguments")
+		logger.Fatal("You must supply one or more arguments")
 	}
 
 	if err := decoder.Decode(&input); err != nil {
@@ -48,30 +47,30 @@ func main() {
 	case check:
 		output, err := behaviors.Check(input, m)
 		if err != nil {
-			logger.WithError(err).Fatalf("Unable to get APP info from marathon: %s", err)
+			logger.WithError(err).Fatalf("Unable to get APP versions from marathon")
 		}
 		if err = encoder.Encode(output); err != nil {
-			logger.WithError(err).Fatalf("Failed to write output: %s", err)
+			logger.WithError(err).Fatalf("Failed to write output")
 		}
 		return
 
 	case in:
 		output, err := behaviors.In(input, m)
 		if err != nil {
-			logger.WithError(err).Fatalf("Unable to get APP info from marathon: %s", err)
+			logger.WithError(err).Fatalf("Unable to get APP info from marathon")
 		}
 		if err = encoder.Encode(output); err != nil {
-			logger.WithError(err).Fatalf("Failed to write output: %s", err)
+			logger.WithError(err).Fatalf("Failed to write output")
 		}
 		return
 
 	case out:
 		output, err := behaviors.Out(input, os.Args[2], m)
 		if err != nil {
-			logger.WithError(err).Fatalf("Unable to deply APP to marathon: %s", err)
+			logger.WithError(err).Fatalf("Unable to deploy APP to marathon")
 		}
 		if err = encoder.Encode(output); err != nil {
-			logger.WithError(err).Fatalf("Failed to write output: %s", err)
+			logger.WithError(err).Fatalf("Failed to write output")
 		}
 		return
 	}

@@ -102,7 +102,7 @@ func TestOut(t *testing.T) {
 			false,
 		},
 		{
-			"Erros fetching latest versions",
+			"Errors fetching latest versions",
 			args{
 				input: InputJSON{
 					Params: Params{AppJSON: "app.json", TimeOut: 2, RestartIfNoUpdate: true},
@@ -115,7 +115,7 @@ func TestOut(t *testing.T) {
 			true,
 		},
 		{
-			"Erros restarting app",
+			"Errors restarting app",
 			args{
 				input: InputJSON{
 					Params: Params{AppJSON: "app.json", TimeOut: 2, RestartIfNoUpdate: true},
@@ -128,7 +128,7 @@ func TestOut(t *testing.T) {
 			true,
 		},
 		{
-			"Erros on second deplyment check",
+			"Errors on second deployment check",
 			args{
 				input: InputJSON{
 					Params: Params{AppJSON: "app.json", TimeOut: 2, RestartIfNoUpdate: true},
