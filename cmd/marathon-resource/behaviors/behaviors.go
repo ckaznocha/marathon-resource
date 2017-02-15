@@ -26,7 +26,7 @@ type Source struct {
 	APIToken  string              `json:"api_token"`
 }
 
-//Version maps to a concousre version
+//Version maps to a concourse version
 type Version struct {
 	Ref string `json:"ref"`
 }
@@ -53,7 +53,7 @@ type IOOutput struct {
 	Metadata []Metadata `json:"metadata"`
 }
 
-// Out shall delploy an APP to marathon based on marathon.json file.
+// Out shall deploy an APP to marathon based on marathon.json file.
 func Out(input InputJSON, appJSONPath string, apiclient marathon.Marathoner) (IOOutput, error) {
 
 	jsondata, err := parsePayload(input.Params, appJSONPath)
@@ -138,7 +138,7 @@ deployloop:
 		if err != nil {
 			return err
 		}
-		return errors.New("Could not deply")
+		return errors.New("Could not deploy")
 	}
 	return nil
 }

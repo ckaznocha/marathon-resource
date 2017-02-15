@@ -6,14 +6,14 @@ import (
 	"time"
 )
 
-//Dates is sa sortable slice of times
+//Dates is a sortable slice of times
 type Dates []time.Time
 
 func (d Dates) Len() int           { return len(d) }
 func (d Dates) Less(i, j int) bool { return d[i].Before(d[j]) }
 func (d Dates) Swap(i, j int)      { d[i], d[j] = d[j], d[i] }
 
-//NewerTimestamps returns all timestamps in a list nwer than a given timestamps
+//NewerTimestamps returns all timestamps in a list newer than a given timestamp
 func NewerTimestamps(
 	timestampStrings []string,
 	currentTimestampString string,
