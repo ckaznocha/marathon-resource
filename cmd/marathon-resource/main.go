@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"os"
@@ -17,61 +18,68 @@ const (
 	out   = "out"
 )
 
-var logger = logrus.New()
-
 func main() {
 	var (
+		err     error
 		input   behaviors.InputJSON
+		output  interface{}
 		decoder = json.NewDecoder(os.Stdin)
 		encoder = json.NewEncoder(os.Stdout)
+
+		logger   = logrus.New()
+		logFatal = func(err error, msg string) {
+			// This is just to make logrus play nice with the tests.
+			// `Fatal()` calls os.Exit(int) which is annoying to test and
+			// `WithError(error)` is hard to mock because it returns a concrete
+			// type.
+			if len(os.Getenv("GO_TESTING")) == 0 {
+				logger.WithError(err).Fatal(msg)
+			}
+			panic(fmt.Sprintf("%s: %v", msg, err))
+		}
 	)
 
 	logger.Out = os.Stderr
 
 	if len(os.Args) < 2 {
-		logger.Fatal("You must supply one or more arguments")
+		logFatal(
+			fmt.Errorf("You must supply more than %d arguments", len(os.Args)),
+			"Incorrect number of arguments",
+		)
 	}
 
-	if err := decoder.Decode(&input); err != nil {
-		logger.WithError(err).Fatal("Failed to decode stdin")
+	if err = decoder.Decode(&input); err != nil {
+		logFatal(err, "Failed to decode stdin")
 	}
 
 	uri, err := url.Parse(input.Source.URI)
 	if err != nil {
-		logger.WithError(err).Fatalf("Malformed URI %s", input.Source.URI)
+		logFatal(err, fmt.Sprintf("Malformed URI %s", input.Source.URI))
 	}
 
 	m := marathon.NewMarathoner(&http.Client{}, uri, input.Source.BasicAuth, input.Source.APIToken, logger)
 
 	switch os.Args[1] {
 	case check:
-		output, err := behaviors.Check(input, m)
-		if err != nil {
-			logger.WithError(err).Fatalf("Unable to get APP versions from marathon")
+		if output, err = behaviors.Check(input, m); err != nil {
+			logFatal(err, "Unable to get APP versions from marathon")
 		}
-		if err = encoder.Encode(output); err != nil {
-			logger.WithError(err).Fatalf("Failed to write output")
-		}
-		return
-
 	case in:
-		output, err := behaviors.In(input, m)
-		if err != nil {
-			logger.WithError(err).Fatalf("Unable to get APP info from marathon")
+		if output, err = behaviors.In(input, m); err != nil {
+			logFatal(err, "Unable to get APP info from marathon")
 		}
-		if err = encoder.Encode(output); err != nil {
-			logger.WithError(err).Fatalf("Failed to write output")
-		}
-		return
-
 	case out:
-		output, err := behaviors.Out(input, os.Args[2], m)
-		if err != nil {
-			logger.WithError(err).Fatalf("Unable to deploy APP to marathon")
+		if output, err = behaviors.Out(input, os.Args[2], m); err != nil {
+			logFatal(err, "Unable to deploy APP to marathon")
 		}
-		if err = encoder.Encode(output); err != nil {
-			logger.WithError(err).Fatalf("Failed to write output")
-		}
-		return
+	default:
+		logFatal(
+			fmt.Errorf("%q is not a valid behavior", os.Args[1]),
+			"Unknown argument",
+		)
+	}
+
+	if err = encoder.Encode(output); err != nil {
+		logFatal(err, "Failed to write output")
 	}
 }
